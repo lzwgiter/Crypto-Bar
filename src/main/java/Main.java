@@ -1,4 +1,6 @@
+import core.AlgoAgentAbstract;
 import org.apache.commons.cli.*;
+import utils.Utils;
 
 /**
  * 主程序。包含logo和参数解析
@@ -21,8 +23,7 @@ public class Main {
         );
     }
 
-    public static void main(String[] args) {
-        banner();
+    private static CommandLine parseArgs(String[] args) {
         if (args.length == 0) {
             args = new String[]{"-h"};
         }
@@ -92,26 +93,45 @@ public class Main {
         );
         // 创建命令行解析器
         CommandLineParser parser = new DefaultParser();
+        CommandLine line;
         try {
             // 解析命令行
-            CommandLine line = parser.parse(options, args);
+            line = parser.parse(options, args);
             if (line.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.printHelp("java crypto-bar.jar [args]",
                         options);
-            }
-            if (line.hasOption("l")) {
-                System.out.println(
-                        """
-                        对称加密算法：SM4、AES、CHACHA20
-                        非对称加密/签名算法：SM2、RSA、ECC（secp256k1）
-                        哈希摘要算法：SM3、SHA512、MD5
-                        """
-                );
+            } else {
+                return line;
             }
         } catch (ParseException exp) {
-            System.err.println("参数解析错误：" + exp.getMessage());
+            System.out.println("参数解析错误，请使用 -h 查看帮助信息。");
         }
+        return null;
+    }
 
+    public static void main(String[] args) {
+        banner();
+        CommandLine cmdLine = parseArgs(args);
+        if (cmdLine != null) {
+            if (cmdLine.hasOption("l")) {
+                System.out.println(
+                        """
+                                对称加密算法：SM4、AES、CHACHA20
+                                非对称加密/签名算法：SM2、RSA、ECC（secp256k1）
+                                哈希摘要算法：SM3、SHA256、MD5
+                                """
+                );
+            } else {
+                AlgoAgentAbstract agent = Utils.getAgentFactory(cmdLine.getOptionValue("n"));
+                if (agent != null) {
+                    String output = agent.process(cmdLine.getOptionValue("i"));
+                    System.out.println("\uD83C\uDF7A：" + output);
+                } else {
+                    System.out.println("不受支持的算法！请使用-l查看支持的算法");
+                }
+
+            }
+        }
     }
 }
