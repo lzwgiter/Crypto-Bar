@@ -23,4 +23,10 @@ public class SHA256Agent extends DigestAgentAbstract {
         sha256.update(data.getBytes(StandardCharsets.UTF_8));
         return "\uD83C\uDF7A" + Utils.byteToHexString(sha256.digest());
     }
+
+    @Override
+    public String digest(String data, String filePath) {
+        Utils.writeToFile(this.digest(data).substring(3), filePath);
+        return "\uD83C\uDF7A：结果已经写入" + filePath;
+    }
 }

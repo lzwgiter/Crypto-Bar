@@ -21,15 +21,11 @@ public class DigestAgentFactory extends AgentFactoryAbstract {
 
     @Override
     public DigestAgentAbstract createAgent(String algorithm) {
-        switch (algorithm) {
-            case "MD5":
-                return new MD5Agent();
-            case "SHA256":
-                return new SHA256Agent();
-            case "SM3":
-                return new SM3Agent();
-            default:
-                return null;
-        }
+        return switch (algorithm) {
+            case "MD5" -> new MD5Agent();
+            case "SHA256" -> new SHA256Agent();
+            case "SM3" -> new SM3Agent();
+            default -> null;
+        };
     }
 }

@@ -11,8 +11,8 @@ public abstract class AlgoAgentAbstract {
     /**
      * 处理输入，操作包括加密、解密、签名、验签、摘要、验证摘要
      *
-     * @param input 输入数据
+     * @param context 算法上下文
      * @return 返回结果
      */
-    public abstract String process(String input);
+    public abstract String process(AlgoContext context);
 }

@@ -1,4 +1,5 @@
 import core.AlgoAgentAbstract;
+import core.AlgoContext;
 import org.apache.commons.cli.*;
 import utils.Utils;
 
@@ -69,7 +70,6 @@ public class Main {
                 Option.builder("k")
                         .longOpt("key")
                         .hasArg()
-                        .argName("key")
                         .desc("加密/签名、解密/验签密钥PEM文件路径")
                         .build()
         );
@@ -123,9 +123,11 @@ public class Main {
                                 """
                 );
             } else {
+                // 获取算法上下文和
+                AlgoContext context = Utils.buildAlgoContext(cmdLine);
                 AlgoAgentAbstract agent = Utils.getAgentFactory(cmdLine.getOptionValue("n"));
                 if (agent != null) {
-                    System.out.println(agent.process(cmdLine.getOptionValue("i")));
+                    System.out.println(agent.process(context));
                 } else {
                     System.out.println("不受支持的算法！请使用-l查看支持的算法");
                 }
