@@ -1,5 +1,11 @@
 package digest;
 
+import utils.Utils;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * @author lzwgiter
  * @email float311@163.com
@@ -8,6 +14,13 @@ package digest;
 public class SHA256Agent extends DigestAgentAbstract {
     @Override
     public String digest(String data) {
-        return null;
+        MessageDigest sha256;
+        try {
+            sha256 = MessageDigest.getInstance("SHA256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        sha256.update(data.getBytes(StandardCharsets.UTF_8));
+        return "\uD83C\uDF7A" + Utils.byteToHexString(sha256.digest());
     }
 }

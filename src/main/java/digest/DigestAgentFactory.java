@@ -24,14 +24,10 @@ public class DigestAgentFactory extends AgentFactoryAbstract {
         switch (algorithm) {
             case "MD5":
                 return new MD5Agent();
-            case "SHA-1":
+            case "SHA256":
                 return new SHA256Agent();
-//            case "SHA-256":
-//                return new DigestSha256();
-//            case "SHA-384":
-//                return new DigestSha384();
-//            case "SHA-512":
-//                return new DigestSha512();
+            case "SM3":
+                return new SM3Agent();
             default:
                 return null;
         }

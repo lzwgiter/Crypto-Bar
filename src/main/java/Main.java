@@ -125,8 +125,7 @@ public class Main {
             } else {
                 AlgoAgentAbstract agent = Utils.getAgentFactory(cmdLine.getOptionValue("n"));
                 if (agent != null) {
-                    String output = agent.process(cmdLine.getOptionValue("i"));
-                    System.out.println("\uD83C\uDF7A：" + output);
+                    System.out.println(agent.process(cmdLine.getOptionValue("i")));
                 } else {
                     System.out.println("不受支持的算法！请使用-l查看支持的算法");
                 }

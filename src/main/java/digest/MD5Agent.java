@@ -29,6 +29,6 @@ public class MD5Agent extends DigestAgentAbstract {
             throw new RuntimeException(e);
         }
         md5.update(data.getBytes(StandardCharsets.UTF_8));
-        return Utils.byteToHexString(md5.digest());
+        return "\uD83C\uDF7A" + Utils.byteToHexString(md5.digest());
     }
 }
