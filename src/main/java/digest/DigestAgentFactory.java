@@ -1,6 +1,7 @@
 package digest;
 
 import core.AgentFactoryAbstract;
+import lombok.Getter;
 
 /**
  * 消息摘要工厂
@@ -11,13 +12,10 @@ import core.AgentFactoryAbstract;
  */
 public class DigestAgentFactory extends AgentFactoryAbstract {
 
-    private static final DigestAgentFactory FACTORY_INSTANCE = new DigestAgentFactory();
+    @Getter
+    private static final DigestAgentFactory instance = new DigestAgentFactory();
 
     private DigestAgentFactory() {}
-
-    public static DigestAgentFactory getInstance() {
-        return FACTORY_INSTANCE;
-    }
 
     @Override
     public DigestAgentAbstract createAgent(String algorithm) {

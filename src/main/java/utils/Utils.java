@@ -1,12 +1,12 @@
 package utils;
 
+import asymmetric.AsymmetricAgentFactory;
 import core.AlgoAgentAbstract;
-import core.AlgoContext;
 import core.SupportedAlgo;
 import digest.DigestAgentFactory;
-import org.apache.commons.cli.CommandLine;
 
 import java.io.*;
+import java.util.Base64;
 
 /**
  * @author lzwgiter
@@ -31,6 +31,31 @@ public class Utils {
     }
 
     /**
+     *  将byte数组转换为Base64字符串
+     * @param bytes 待编码数据
+     * @return Base64字符串
+     */
+    public static String byteToBase64String(byte[] bytes) {
+        return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    /**
+     * 格式化密钥字符串为70字符一行
+     * @param keyBytes 原始密钥字节字符串
+     * @return 格式化的密钥base64字符串
+     */
+    public static String normalizeKeyFormat(byte[] keyBytes) {
+        String base64KeyString = byteToBase64String(keyBytes);
+        StringBuilder sb = new StringBuilder();
+        int rowAccount = base64KeyString.length() / 70;
+        for (int i = 0; i < rowAccount; i++) {
+            sb.append(base64KeyString, i * 70, (i + 1) * 70).append("\n");
+        }
+        sb.append(base64KeyString, rowAccount * 70, base64KeyString.length() - 1);
+        return sb.toString();
+    }
+
+    /**
      * 将算法结果写入文件
      * @param data 算法输出
      * @param fileName 文件名称
@@ -43,39 +68,7 @@ public class Utils {
         }
     }
 
-    /**
-     * 解析命令行参数并创建算法上下文
-     * @param cmdLine 命令行参数
-     * @return {@link AlgoContext}
-     */
-    public static AlgoContext buildAlgoContext(CommandLine cmdLine) {
-        AlgoContext context = new AlgoContext();
-        // 设置输入数据
-        if (cmdLine.hasOption("i")) {
-            context.setInputData(cmdLine.getOptionValue("i"));
-        }
-        // 设置输出方式
-        if (cmdLine.hasOption("o")) {
-            context.setOutputWay(cmdLine.getOptionValue("o"));
-        }
-        // 是否生成公私钥对
-        if (cmdLine.hasOption("g")) {
-            context.setGeneKey(true);
-            // 使用生成公私钥功能，直接返回
-            return context;
-        } else {
-            // 非生成公私钥对功能，即加解密、摘要功能
-            if (cmdLine.hasOption("m")) {
-                // 加解密功能
-                if (cmdLine.hasOption("k")) {
-                    context.setInputKey(cmdLine.getOptionValue("k"));
-                } else {
-                    throw new RuntimeException("请给出对称/非对称秘钥！");
-                }
-            }
-        }
-        return context;
-    }
+
 
     /**
      * 获取算法代理工厂实例
@@ -86,12 +79,13 @@ public class Utils {
     public static AlgoAgentAbstract getAgentFactory(String algoArg) {
         if (SupportedAlgo.SUPPORTED_DIGEST_ALGO.contains(algoArg)) {
             return DigestAgentFactory.getInstance().createAgent(algoArg);
-        } else {
+        } else if (SupportedAlgo.SUPPORTED_ASYMMETRIC_ALGO.contains(algoArg)) {
+            return AsymmetricAgentFactory.getInstance().createAgent(algoArg);
+        }
+        else {
             return null;
         }
-//        else if (SupportedAlgo.SUPPORTED_SYMMETRIC_ALGO.contains(AlgoArg)) {
-//
-//        } else if (SupportedAlgo.SUPPORTED_ASYMMETRIC_ALGO.contains(AlgoArg)) {
+//         else if (SupportedAlgo.SUPPORTED_ASYMMETRIC_ALGO.contains(AlgoArg)) {
 //
 //        } else if (SupportedAlgo.SUPPORTED_DSA_ALGO.contains(AlgoArg)) {
 //

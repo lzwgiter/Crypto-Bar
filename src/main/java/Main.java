@@ -44,7 +44,6 @@ public class Main {
         options.addOption(Option.builder("g")
                 .longOpt("genKey")
                 .argName("keyType")
-                .hasArg()
                 .desc("生成PEM格式公私钥对（RSA2048、ECC）")
                 .build());
         // 算法名称
@@ -124,7 +123,7 @@ public class Main {
                 );
             } else {
                 // 获取算法上下文和
-                AlgoContext context = Utils.buildAlgoContext(cmdLine);
+                AlgoContext context = AlgoContext.buildAlgoContext(cmdLine);
                 AlgoAgentAbstract agent = Utils.getAgentFactory(cmdLine.getOptionValue("n"));
                 if (agent != null) {
                     System.out.println(agent.process(context));

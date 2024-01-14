@@ -3,6 +3,7 @@ package core;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.cli.CommandLine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,7 +37,7 @@ public class AlgoContext {
     private boolean geneKey;
 
     /**
-     * 输入秘钥：可以为私钥、公钥、对称密钥，具体使用方法取决于密码功能
+     * 输入密钥：可以为私钥、公钥、对称密钥，具体使用方法取决于密码功能
      */
     @Getter
     private String inputKey;
@@ -73,19 +74,17 @@ public class AlgoContext {
     public void setOutputWay(String cmdLineInputData) {
         // 输出为文件
         // 文件路径
-        File file = new File(cmdLineInputData);
-        if (file.exists()) {
-            // 文件已存在
-            throw new RuntimeException("当前路径已存在该文件！");
-        } else {
-            File outputFile = new File(cmdLineInputData);
-            try {
-                // 创建空文件并保存文件名，否则提示已存在该文件
-                outputFile.createNewFile();
-                this.outputWay = cmdLineInputData;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        File outputFile = new File(cmdLineInputData);
+        try {
+            // 创建空文件并保存文件名，否则提示已存在该文件
+            if (outputFile.createNewFile()) {
+                this.inputKey = cmdLineInputData;
+            } else {
+                throw new RuntimeException("当前路径已存在该文件！");
             }
+            this.outputWay = cmdLineInputData;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -112,8 +111,42 @@ public class AlgoContext {
                 throw new RuntimeException("请输入文件！");
             }
         } else {
-            // 否则使用终端参数作为秘钥
+            // 否则使用终端参数作为密钥
             this.inputKey = cmdLineInputData;
         }
+    }
+
+    /**
+     * 解析命令行参数并创建算法上下文
+     * @param cmdLine 命令行参数
+     * @return {@link AlgoContext}
+     */
+    public static AlgoContext buildAlgoContext(CommandLine cmdLine) {
+        AlgoContext context = new AlgoContext();
+        // 设置输入数据
+        if (cmdLine.hasOption("i")) {
+            context.setInputData(cmdLine.getOptionValue("i"));
+        }
+        // 设置输出方式
+        if (cmdLine.hasOption("o")) {
+            context.setOutputWay(cmdLine.getOptionValue("o"));
+        }
+        // 是否生成公私钥对
+        if (cmdLine.hasOption("g")) {
+            context.setGeneKey(true);
+            // 使用生成公私钥功能，直接返回
+            return context;
+        } else {
+            // 非生成公私钥对功能，即加解密、摘要功能
+            if (cmdLine.hasOption("m")) {
+                // 加解密功能
+                if (cmdLine.hasOption("k")) {
+                    context.setInputKey(cmdLine.getOptionValue("k"));
+                } else {
+                    throw new RuntimeException("请给出对称/非对称密钥！");
+                }
+            }
+        }
+        return context;
     }
 }
