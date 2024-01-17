@@ -1,11 +1,8 @@
 package asymmetric;
 
 import core.AlgoContext;
-import utils.Utils;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 
 /**
  * @author lzwgiter
@@ -26,21 +23,10 @@ public class RSAAgent extends AsymmetricAgentAbstract {
             // 初始化密钥位数
             rsaKeysPairGenerator.initialize(2048);
             // 获取公私钥对
-            KeyPair keyPair = rsaKeysPairGenerator.genKeyPair();
             if (context.getOutputWay() != null) {
-                Utils.writeToFile(keyPair.getPublic().getFormat(), context.getOutputWay());
-                Utils.writeToFile(keyPair.getPrivate().getFormat(), context.getOutputWay());
-                return "\uD83C\uDF77：已写入文件" + context.getOutputWay();
+                return this.generateKey(rsaKeysPairGenerator, true, context.getOutputWay());
             } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append("\uD83C\uDF77：\n");
-                sb.append("公钥（X.509格式）：\n-----BEGIN PUBLIC KEY-----\n");
-                sb.append(Utils.normalizeKeyFormat(keyPair.getPublic().getEncoded()));
-                sb.append("\n-----END PUBLIC KEY-----\n");
-                sb.append("私钥（PKCS#8）：\n-----BEGIN PRIVATE KEY-----\n");
-                sb.append(Utils.normalizeKeyFormat(keyPair.getPrivate().getEncoded()));
-                sb.append("\n-----END PRIVATE KEY-----");
-                return sb.toString();
+                return this.generateKey(rsaKeysPairGenerator, false, null);
             }
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -55,7 +41,7 @@ public class RSAAgent extends AsymmetricAgentAbstract {
      */
     @Override
     public String encrypt(AlgoContext context) {
-        return null;
+        return this.encrypt("RSA", context.getInputKey(), context.getInputData());
     }
 
     /**
@@ -66,28 +52,16 @@ public class RSAAgent extends AsymmetricAgentAbstract {
      */
     @Override
     public String decrypt(AlgoContext context) {
-        return null;
+        return this.decrypt("RSA", context.getInputKey(), context.getInputData());
     }
 
-    /**
-     * 签名
-     *
-     * @param context 算法上下文
-     * @return String
-     */
     @Override
     public String sign(AlgoContext context) {
-        return null;
+        return this.sign("RSA", context.getInputKey(), context.getInputData());
     }
 
-    /**
-     * 验签
-     *
-     * @param context 算法上下文
-     * @return String
-     */
     @Override
     public String verify(AlgoContext context) {
-        return null;
+        return this.verify("RSA", context.getInputKey(), context.getSignature(), context.getInputData());
     }
 }

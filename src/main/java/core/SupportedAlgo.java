@@ -30,6 +30,6 @@ public class SupportedAlgo {
     /**
      * 支持的非对称加密算法
      */
-    public static final List<String> SUPPORTED_ASYMMETRIC_ALGO = new ArrayList<>(Arrays.asList("RSA", "ECC"));
+    public static final List<String> SUPPORTED_ASYMMETRIC_ALGO = new ArrayList<>(Arrays.asList("SM2", "RSA", "ECC"));
 
 }

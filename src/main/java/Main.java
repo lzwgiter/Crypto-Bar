@@ -12,15 +12,15 @@ import utils.Utils;
  */
 public class Main {
     public static void banner() {
-        System.out.println(
+        System.out.println("\033[38;5;14m" +
                 """
                            ______                 __              ____           \s
                           / ____/______  ______  / /_____        / __ )____ ______
                          / /   / ___/ / / / __ \\/ __/ __ \\______/ __  / __ `/ ___/
                         / /___/ /  / /_/ / /_/ / /_/ /_/ /_____/ /_/ / /_/ / /   \s
-                        \\____/_/   \\__, / .___/\\__/\\____/     /_____/\\__,_/_/    \s
+                        \\____/_/   \\__, / .___/\\__/\\____/     /_____/\\__,_/_/    (by lzwgiter v1.0)\s
                                   /____/_/                                       \s
-                        """
+                        \033[0m"""
         );
     }
 
@@ -61,7 +61,7 @@ public class Main {
                         .longOpt("mode")
                         .hasArg()
                         .argName("mode")
-                        .desc("工作模式，加密/签名（e)、解密/验签（d）")
+                        .desc("工作模式，加密（e)、解密（d）、签名(s)、验签(v)")
                         .build()
         );
         // 密钥
@@ -69,7 +69,15 @@ public class Main {
                 Option.builder("k")
                         .longOpt("key")
                         .hasArg()
-                        .desc("加密/签名、解密/验签密钥PEM文件路径")
+                        .desc("加密/签名、解密/验签密钥文件路径")
+                        .build()
+        );
+        // 签名内容
+        options.addOption(
+                Option.builder("s")
+                        .longOpt("sign")
+                        .hasArg()
+                        .desc("待校验签名内容")
                         .build()
         );
         // 输入内容
@@ -90,15 +98,29 @@ public class Main {
                         .desc("输出文件路径")
                         .build()
         );
+        // bonus
+        options.addOption(
+                Option.builder("x")
+                        .longOpt("bonus")
+                        .desc("彩蛋")
+                        .build()
+        );
         // 创建命令行解析器
         CommandLineParser parser = new DefaultParser();
         CommandLine line;
         try {
             // 解析命令行
             line = parser.parse(options, args);
+            if (line.hasOption("x")) {
+                System.out.println(Utils.getBonus());
+            }
             if (line.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("java crypto-bar.jar [args]",
+                formatter.printHelp("""
+                                java -jar crypto-bar.jar -n <algo_name> [options] <args>\033[38;5;10m
+                                  - eg: SM3摘要：java -jar crypto-bar.jar -n sm3 -i "plain text"
+                                  - eg: 生成RSA公私钥：java -jar crypto-bar.jar -n rsa -g -o ./output
+                                  - eg: 验证RSA签名：java -jar crypto-bar.jar -n rsa -m d -i <原始数据> -s <签名内容> -k <公钥>\033[0m""",
                         options);
             } else {
                 return line;
@@ -121,16 +143,18 @@ public class Main {
                                 哈希摘要算法：SM3、SHA256、MD5
                                 """
                 );
+            }
+            if (!cmdLine.hasOption("n")) {
+                System.out.println("请指定要使用的算法！请使用-l查看支持的算法");
             } else {
-                // 获取算法上下文和
+                // 获取算法上下文和代理对象
                 AlgoContext context = AlgoContext.buildAlgoContext(cmdLine);
-                AlgoAgentAbstract agent = Utils.getAgentFactory(cmdLine.getOptionValue("n"));
+                AlgoAgentAbstract agent = Utils.getAgentFactory(cmdLine.getOptionValue("n").toUpperCase());
                 if (agent != null) {
                     System.out.println(agent.process(context));
                 } else {
                     System.out.println("不受支持的算法！请使用-l查看支持的算法");
                 }
-
             }
         }
     }

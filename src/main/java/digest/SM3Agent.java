@@ -11,13 +11,12 @@ import utils.Utils;
 public class SM3Agent extends DigestAgentAbstract {
     @Override
     public String digest(String data) {
-
-        return "\uD83C\uDF7A" + SmUtil.sm3(data);
+        return Utils.getAWineHere() + SmUtil.sm3(data);
     }
 
     @Override
     public String digest(String data, String filePath) {
         Utils.writeToFile(this.digest(data).substring(3), filePath);
-        return "\uD83C\uDF7A：结果已经写入" + filePath;
+        return Utils.getAWineHere() + "结果已经写入" + filePath;
     }
 }

@@ -7,7 +7,6 @@ import org.apache.commons.cli.CommandLine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -37,10 +36,19 @@ public class AlgoContext {
     private boolean geneKey;
 
     /**
+     * 工作模式：加密/签名（e)、解密/验签（d）
+     */
+    @Setter
+    private String mode;
+
+    /**
      * 输入密钥：可以为私钥、公钥、对称密钥，具体使用方法取决于密码功能
      */
     @Getter
     private String inputKey;
+
+    @Getter
+    private String signature;
 
     /**
      * 设置输入数据，文件或终端
@@ -52,13 +60,17 @@ public class AlgoContext {
         if (cmdLineInputData.contains("/")) {
             // 文件路径
             File file = new File(cmdLineInputData);
-            // 若文件存在则读取
-            try {
-                // 一次性读入
-                Scanner scanner = new Scanner(file).useDelimiter("\\Z");
-                this.inputData = scanner.next();
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException("文件路径不存在！");
+            if (file.isFile()) {
+                try {
+                    // 一次性读入
+                    Scanner scanner = new Scanner(file).useDelimiter("\\Z");
+                    this.inputData = scanner.next();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException("文件路径不存在！");
+                }
+            } else {
+                // 输入数据为包含"/"的字符串
+                this.inputData = cmdLineInputData;
             }
         } else {
             // 输入来自终端参数
@@ -75,16 +87,11 @@ public class AlgoContext {
         // 输出为文件
         // 文件路径
         File outputFile = new File(cmdLineInputData);
-        try {
-            // 创建空文件并保存文件名，否则提示已存在该文件
-            if (outputFile.createNewFile()) {
-                this.inputKey = cmdLineInputData;
-            } else {
-                throw new RuntimeException("当前路径已存在该文件！");
-            }
+        // 若文件存在则提示已存在该文件
+        if (!outputFile.exists()) {
             this.outputWay = cmdLineInputData;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } else {
+            throw new RuntimeException("当前路径已存在该文件！");
         }
     }
 
@@ -108,11 +115,34 @@ public class AlgoContext {
                     throw new RuntimeException("文件路径不存在！");
                 }
             } else {
-                throw new RuntimeException("请输入文件！");
+                throw new RuntimeException("输入为目录，请使用参数-i输入文件！-h查看用法");
             }
         } else {
             // 否则使用终端参数作为密钥
             this.inputKey = cmdLineInputData;
+        }
+    }
+
+    public void setSignature(String cmdLineInputData) {
+        if (cmdLineInputData.contains("/")) {
+            // 文件路径
+            File file = new File(cmdLineInputData);
+            // 若文件存在则读取
+            if (file.isFile()) {
+                // 若文件存在则读取
+                try {
+                    // 一次性读入
+                    Scanner scanner = new Scanner(file).useDelimiter("\\Z");
+                    this.signature = scanner.next();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException("文件路径不存在！");
+                }
+            } else {
+                this.signature = cmdLineInputData;
+            }
+        } else {
+            // 否则使用终端参数作为输入签名内容
+            this.signature = cmdLineInputData;
         }
     }
 
@@ -139,9 +169,14 @@ public class AlgoContext {
         } else {
             // 非生成公私钥对功能，即加解密、摘要功能
             if (cmdLine.hasOption("m")) {
+                context.setMode(cmdLine.getOptionValue("m"));
                 // 加解密功能
                 if (cmdLine.hasOption("k")) {
                     context.setInputKey(cmdLine.getOptionValue("k"));
+                    if (cmdLine.hasOption("s")) {
+                        // 签名验证功能
+                        context.setSignature(cmdLine.getOptionValue("s"));
+                    }
                 } else {
                     throw new RuntimeException("请给出对称/非对称密钥！");
                 }

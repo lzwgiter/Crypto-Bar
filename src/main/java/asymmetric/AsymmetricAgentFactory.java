@@ -22,7 +22,7 @@ public class AsymmetricAgentFactory extends AgentFactoryAbstract {
     public AlgoAgentAbstract createAgent(String algorithm) {
         return switch (algorithm) {
             case "RSA" -> new RSAAgent();
-            case "EC" -> new ECAgent();
+            case "ECC" -> new ECAgent();
             case "SM2" -> new SM2Agent();
             default -> null;
         };

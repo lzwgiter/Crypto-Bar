@@ -1,6 +1,7 @@
 package asymmetric;
 
 import core.AlgoContext;
+import java.security.*;
 
 /**
  * 椭圆曲线体制代理
@@ -19,7 +20,17 @@ public class ECAgent extends AsymmetricAgentAbstract {
      */
     @Override
     public String generateKey(AlgoContext context) {
-        return null;
+        try {
+            KeyPairGenerator ecKeysPairGenerator = KeyPairGenerator.getInstance("Ed25519");
+            // 获取公私钥对
+            if (context.getOutputWay() != null) {
+                return this.generateKey(ecKeysPairGenerator, true, context.getOutputWay());
+            } else {
+                return this.generateKey(ecKeysPairGenerator, false, null);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -30,7 +41,9 @@ public class ECAgent extends AsymmetricAgentAbstract {
      */
     @Override
     public String encrypt(AlgoContext context) {
-        return null;
+        // todo 椭圆曲线算法貌似这里不支持直接加密
+//        return this.encrypt("Ed25519", context.getInputKey(), context.getInputData());
+        return "Not Supported";
     }
 
     /**
@@ -41,26 +54,16 @@ public class ECAgent extends AsymmetricAgentAbstract {
      */
     @Override
     public String decrypt(AlgoContext context) {
-        return null;
+        // todo 解密一样
+//        return this.decrypt("Ed25519", context.getInputKey(), context.getInputData());
+         return "Not Supported";
     }
 
-    /**
-     * 签名
-     *
-     * @param context 算法上下文
-     * @return String
-     */
     @Override
     public String sign(AlgoContext context) {
         return null;
     }
 
-    /**
-     * 验签
-     *
-     * @param context 算法上下文
-     * @return String
-     */
     @Override
     public String verify(AlgoContext context) {
         return null;
