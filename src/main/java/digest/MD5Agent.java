@@ -29,12 +29,12 @@ public class MD5Agent extends DigestAgentAbstract {
             throw new RuntimeException(e);
         }
         md5.update(data.getBytes(StandardCharsets.UTF_8));
-        return Utils.getAWineHere() + Utils.byteToHexString(md5.digest());
+        return Utils.getWineHere() + Utils.byteToHexString(md5.digest());
     }
 
     @Override
     public String digest(String data, String filePath) {
         Utils.writeToFile(this.digest(data).substring(3), filePath);
-        return Utils.getAWineHere() + "结果已经写入" + filePath;
+        return Utils.getWineHere() + "结果已经写入" + filePath;
     }
 }

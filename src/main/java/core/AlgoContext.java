@@ -178,7 +178,7 @@ public class AlgoContext {
                         context.setSignature(cmdLine.getOptionValue("s"));
                     }
                 } else {
-                    throw new RuntimeException("请给出对称/非对称密钥！");
+                    throw new RuntimeException("请使用-k给出加/解密使用的密钥！使用-h查看用法");
                 }
             }
         }

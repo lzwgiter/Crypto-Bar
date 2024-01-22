@@ -16,15 +16,20 @@ public class AsymmetricAgentFactory extends AgentFactoryAbstract {
     @Getter
     private static final AsymmetricAgentFactory instance = new AsymmetricAgentFactory();
 
-    private AsymmetricAgentFactory() {}
+    private AsymmetricAgentFactory() {
+    }
 
     @Override
     public AlgoAgentAbstract createAgent(String algorithm) {
-        return switch (algorithm) {
-            case "RSA" -> new RSAAgent();
-            case "ECC" -> new ECAgent();
-            case "SM2" -> new SM2Agent();
-            default -> null;
-        };
+        switch (algorithm) {
+            case "RSA":
+                return new RSAAgent();
+            case "ECC":
+                return new ECAgent();
+            case "SM2":
+                return new SM2Agent();
+            default:
+                return null;
+        }
     }
 }

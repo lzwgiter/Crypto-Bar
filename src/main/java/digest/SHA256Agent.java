@@ -21,12 +21,12 @@ public class SHA256Agent extends DigestAgentAbstract {
             throw new RuntimeException(e);
         }
         sha256.update(data.getBytes(StandardCharsets.UTF_8));
-        return Utils.getAWineHere() + Utils.byteToHexString(sha256.digest());
+        return Utils.getWineHere() + Utils.byteToHexString(sha256.digest());
     }
 
     @Override
     public String digest(String data, String filePath) {
         Utils.writeToFile(this.digest(data).substring(3), filePath);
-        return Utils.getAWineHere() + "结果已经写入" + filePath;
+        return Utils.getWineHere() + "结果已经写入" + filePath;
     }
 }

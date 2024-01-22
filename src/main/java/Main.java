@@ -1,7 +1,10 @@
 import core.AlgoAgentAbstract;
 import core.AlgoContext;
 import org.apache.commons.cli.*;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import utils.Utils;
+
+import java.security.Security;
 
 /**
  * 主程序。包含logo和参数解析
@@ -13,14 +16,13 @@ import utils.Utils;
 public class Main {
     public static void banner() {
         System.out.println("\033[38;5;14m" +
-                """
-                           ______                 __              ____           \s
-                          / ____/______  ______  / /_____        / __ )____ ______
-                         / /   / ___/ / / / __ \\/ __/ __ \\______/ __  / __ `/ ___/
-                        / /___/ /  / /_/ / /_/ / /_/ /_/ /_____/ /_/ / /_/ / /   \s
-                        \\____/_/   \\__, / .___/\\__/\\____/     /_____/\\__,_/_/    (by lzwgiter v1.0)\s
-                                  /____/_/                                       \s
-                        \033[0m"""
+                           "   ______                 __              ____            \n" +
+                           "  / ____/______  ______  / /_____        / __ )____ ______\n" +
+                           " / /   / ___/ / / / __ \\/ __/ __ \\______/ __  / __ `/ ___/\n" +
+                           "/ /___/ /  / /_/ / /_/ / /_/ /_/ /_____/ /_/ / /_/ / /    \n" +
+                           "\\____/_/   \\__, / .___/\\__/\\____/     /_____/\\__,_/_/    (by lzwgiter v1.0) \n" +
+                           "          /____/_/                                        \n" +
+                           "\033[0m"
         );
     }
 
@@ -116,11 +118,10 @@ public class Main {
             }
             if (line.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("""
-                                java -jar crypto-bar.jar -n <algo_name> [options] <args>\033[38;5;10m
-                                  - eg: SM3摘要：java -jar crypto-bar.jar -n sm3 -i "plain text"
-                                  - eg: 生成RSA公私钥：java -jar crypto-bar.jar -n rsa -g -o ./output
-                                  - eg: 验证RSA签名：java -jar crypto-bar.jar -n rsa -m d -i <原始数据> -s <签名内容> -k <公钥>\033[0m""",
+                formatter.printHelp("java -jar crypto-bar.jar -n <algo_name> [options] <args>\n\033[38;5;10m" +
+                                    "- eg: SM3摘要：java -jar crypto-bar.jar -n sm3 -i \"plain text\"\n" +
+                                    "- eg: 生成RSA公私钥：java -jar crypto-bar.jar -n rsa -g -o ./output\n" +
+                                    "- eg: 验证RSA签名：java -jar crypto-bar.jar -n rsa -m d -i <原始数据> -s <签名内容> -k <公钥>\033[0m",
                         options);
             } else {
                 return line;
@@ -133,16 +134,13 @@ public class Main {
 
     public static void main(String[] args) {
         banner();
+        Security.addProvider(new BouncyCastleProvider());
         CommandLine cmdLine = parseArgs(args);
         if (cmdLine != null) {
             if (cmdLine.hasOption("l")) {
-                System.out.println(
-                        """
-                                对称加密算法：SM4、AES、CHACHA20
-                                非对称加密/签名算法：SM2、RSA、ECC（secp256k1）
-                                哈希摘要算法：SM3、SHA256、MD5
-                                """
-                );
+                System.out.println("对称加密算法：SM4、AES（192bits）、CHACHA20");
+                System.out.println("非对称加密/签名算法：SM2、RSA（2048bits）、ECC（Ed25519）");
+                System.out.println("哈希摘要算法：SM3、SHA256、MD5");
             }
             if (!cmdLine.hasOption("n")) {
                 System.out.println("请指定要使用的算法！请使用-l查看支持的算法");

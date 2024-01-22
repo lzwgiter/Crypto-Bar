@@ -33,13 +33,18 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             throw new RuntimeException("请指定工作模式！");
         }
         // 否则为加解密功能
-        return switch (context.getMode()) {
-            case "e" -> this.encrypt(context);
-            case "d" -> this.decrypt(context);
-            case "s" -> this.sign(context);
-            case "v" -> this.verify(context);
-            default -> null;
-        };
+        switch (context.getMode()) {
+            case "e":
+                return this.encrypt(context);
+            case "d":
+                return this.decrypt(context);
+            case "s":
+                return this.sign(context);
+            case "v":
+                return this.verify(context);
+            default:
+                return null;
+        }
     }
 
     /**
@@ -59,7 +64,7 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             return "\uD83C\uDF77：已写入文件" + filePath;
         } else {
             StringBuilder sb = new StringBuilder();
-            sb.append(Utils.getAWineHere());
+            sb.append(Utils.getWineHere());
             sb.append("\033[38;5;10m公钥（X.509格式）：\033[0m\n-----BEGIN PUBLIC KEY-----\n");
             sb.append(Utils.normalizeFormat(keyPair.getPublic().getEncoded()));
             sb.append("\n-----END PUBLIC KEY-----\n");
@@ -94,7 +99,7 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             Cipher cipher = Cipher.getInstance(algoName);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] result = cipher.doFinal(dataToEncrypt.getBytes(StandardCharsets.UTF_8));
-            return Utils.getAWineHere() + Utils.byteToBase64String(result);
+            return Utils.getWineHere() + Utils.byteToBase64String(result);
         } catch (NoSuchPaddingException | InvalidKeySpecException | NoSuchAlgorithmException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException e) {
             throw new RuntimeException(e);
@@ -124,7 +129,7 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             Cipher cipher = Cipher.getInstance(algoName);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] result = cipher.doFinal(Utils.base64StringToByte(dataToDecrypt));
-            return Utils.getAWineHere() + new String(result);
+            return Utils.getWineHere() + new String(result);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException e) {
             throw new RuntimeException(e);
@@ -156,7 +161,7 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
             byte[] result = cipher.doFinal(dataHash.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
-            sb.append(Utils.getAWineHere());
+            sb.append(Utils.getWineHere());
             sb.append("原始数据：");
             sb.append(dataToSign);
             sb.append("\n签名数据：");
@@ -187,9 +192,9 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             cipher.init(Cipher.DECRYPT_MODE, publicKey);
             byte[] result = cipher.doFinal(signToVerify);
             if (SmUtil.sm3(new String(result)).equals(originalDataHash)) {
-                return Utils.getAWineHere() + "签名验证通过！";
+                return Utils.getWineHere() + "签名验证通过！";
             } else {
-                return Utils.getAWineHere() + "签名验证失败！";
+                return Utils.getWineHere() + "签名验证失败！";
             }
         } catch (NoSuchPaddingException | InvalidKeySpecException | NoSuchAlgorithmException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException e) {

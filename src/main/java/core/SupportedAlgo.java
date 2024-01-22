@@ -13,11 +13,6 @@ import java.util.List;
  */
 public class SupportedAlgo {
     /**
-     * 支持的数字签名算法
-     */
-    public static final List<String> SUPPORTED_DSA_ALGO = new ArrayList<>(Arrays.asList("RSA", "ECC"));
-
-    /**
      * 支持的消息摘要算法
      */
     public static final List<String> SUPPORTED_DIGEST_ALGO = new ArrayList<>(Arrays.asList("SM3", "SHA256", "MD5"));

@@ -19,6 +19,9 @@ public abstract class DigestAgentAbstract extends AlgoAgentAbstract {
      */
     @Override
     public String process(AlgoContext context) {
+        if (context.getInputData() == null) {
+            throw new IllegalArgumentException("输入数据为空");
+        }
         if (context.getOutputWay() != null) {
             return this.digest(context.getInputData(), context.getOutputWay());
         } else {

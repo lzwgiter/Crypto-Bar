@@ -29,10 +29,10 @@ public class SM2Agent extends AsymmetricAgentAbstract {
                     context.getOutputWay() + ".pub");
             Utils.writeToFile(Utils.byteToBase64String(keyPair.getPrivate().getEncoded()),
                     context.getOutputWay() + ".pri");
-            return "\uD83C\uDF77：已写入文件" + context.getOutputWay();
+            return Utils.getWineHere() + "已写入文件：" + context.getOutputWay();
         } else {
             StringBuilder sb = new StringBuilder();
-            sb.append(Utils.getAWineHere());
+            sb.append(Utils.getWineHere());
             sb.append("\033[38;5;10m公钥（X.509格式）：\033[0m\n-----BEGIN PUBLIC KEY-----\n");
             sb.append(Utils.normalizeFormat(keyPair.getPublic().getEncoded()));
             sb.append("\n-----END PUBLIC KEY-----\n");
@@ -54,7 +54,7 @@ public class SM2Agent extends AsymmetricAgentAbstract {
         SM2 sm2 = new SM2();
         sm2.setPublicKey(SecureUtil.generatePublicKey("SM2", Utils.base64StringToByte(context.getInputKey())));
         StringBuilder sb = new StringBuilder();
-        sb.append(Utils.getAWineHere());
+        sb.append(Utils.getWineHere());
         sb.append(Utils.byteToBase64String(sm2.encrypt(context.getInputData(), KeyType.PublicKey)));
         return sb.toString();
     }
@@ -70,7 +70,7 @@ public class SM2Agent extends AsymmetricAgentAbstract {
         SM2 sm2 = new SM2();
         sm2.setPrivateKey(SecureUtil.generatePrivateKey("SM2", Utils.base64StringToByte(context.getInputKey())));
         StringBuilder sb = new StringBuilder();
-        sb.append(Utils.getAWineHere());
+        sb.append(Utils.getWineHere());
         sb.append(new String(sm2.decrypt(context.getInputData(), KeyType.PrivateKey)));
         return sb.toString();
     }
