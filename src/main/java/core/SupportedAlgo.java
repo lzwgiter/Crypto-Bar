@@ -20,7 +20,7 @@ public class SupportedAlgo {
     /**
      * 支持的对称加密算法
      */
-    public static final List<String> SUPPORTED_SYMMETRIC_ALGO = new ArrayList<>(Arrays.asList("SM4", "AES", "CHACHA20"));
+    public static final List<String> SUPPORTED_SYMMETRIC_ALGO = new ArrayList<>(Arrays.asList("SM4", "AES"));
 
     /**
      * 支持的非对称加密算法

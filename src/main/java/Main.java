@@ -119,9 +119,10 @@ public class Main {
             if (line.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.printHelp("java -jar crypto-bar.jar -n <algo_name> [options] <args>\n\033[38;5;10m" +
-                                    "- eg: SM3摘要：java -jar crypto-bar.jar -n sm3 -i \"plain text\"\n" +
-                                    "- eg: 生成RSA公私钥：java -jar crypto-bar.jar -n rsa -g -o ./output\n" +
-                                    "- eg: 验证RSA签名：java -jar crypto-bar.jar -n rsa -m d -i <原始数据> -s <签名内容> -k <公钥>\033[0m",
+                                    "- eg: 生成SM3摘要：xxx -n sm3 -i <待哈希数据>\n" +
+                                    "- eg: 生成RSA公私钥：xxx -n rsa -g -o ./output\n" +
+                                    "- eg: 验签：xxx -n rsa -m d -i <原始数据> -s <签名内容> -k <公钥>\n" +
+                                    "- eg: 对称加[解]密：xxx -n sm4 -m e[d] -i <待加/[解]密数据> -k <秘密值>\033[0m",
                         options);
             } else {
                 return line;
@@ -138,8 +139,9 @@ public class Main {
         CommandLine cmdLine = parseArgs(args);
         if (cmdLine != null) {
             if (cmdLine.hasOption("l")) {
-                System.out.println("对称加密算法：SM4、AES（192bits）、CHACHA20");
-                System.out.println("非对称加密/签名算法：SM2、RSA（2048bits）、ECC（Ed25519）");
+                System.out.println("对称加密算法：SM4（128bits）、AES（192bits）");
+                System.out.println("非对称加密算法：SM2、RSA（2048bits）");
+                System.out.println("签名算法：ECC（Ed25519）");
                 System.out.println("哈希摘要算法：SM3、SHA256、MD5");
             }
             if (!cmdLine.hasOption("n")) {

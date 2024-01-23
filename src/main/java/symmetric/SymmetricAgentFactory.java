@@ -28,8 +28,6 @@ public class SymmetricAgentFactory extends AgentFactoryAbstract {
         switch (algorithm) {
             case "AES":
                 return new AESAgent();
-            case "CHACHA20":
-                return new CHACHA20Agent();
             case "SM4":
                 return new SM4Agent();
             default:

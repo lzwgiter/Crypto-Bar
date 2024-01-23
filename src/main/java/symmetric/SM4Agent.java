@@ -1,6 +1,5 @@
 package symmetric;
 
-import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.SmUtil;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import core.AlgoContext;
