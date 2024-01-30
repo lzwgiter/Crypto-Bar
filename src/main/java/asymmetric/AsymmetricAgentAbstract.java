@@ -61,7 +61,7 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
                     filePath + ".pub");
             Utils.writeToFile(Utils.byteToBase64String(keyPair.getPrivate().getEncoded()),
                     filePath + ".pri");
-            return "\uD83C\uDF77：已写入文件" + filePath;
+            return "公私钥已写入文件" + filePath;
         } else {
             StringBuilder sb = new StringBuilder();
             sb.append(Utils.getWineHere());
@@ -85,8 +85,9 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
 
     /**
      * 利用指定算法和公钥对给定数据进行加密操作
-     * @param algoName 算法名称
-     * @param key 公钥 {@link PublicKey}
+     *
+     * @param algoName      算法名称
+     * @param key           公钥 {@link PublicKey}
      * @param dataToEncrypt 待加密数据
      * @return String
      */
@@ -116,8 +117,9 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
 
     /**
      * 利用指定算法和私钥对给定数据进行解密操作
-     * @param algoName 算法名称
-     * @param key 私钥 {@link PrivateKey}
+     *
+     * @param algoName      算法名称
+     * @param key           私钥 {@link PrivateKey}
      * @param dataToDecrypt 待加密数据
      * @return String
      */
@@ -146,8 +148,9 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
 
     /**
      * 数字签名
-     * @param algoName 算法名称
-     * @param signKey 签名私钥 {@link PrivateKey}
+     *
+     * @param algoName   算法名称
+     * @param signKey    签名私钥 {@link PrivateKey}
      * @param dataToSign 待签名数据
      * @return String
      */
@@ -157,9 +160,10 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
         try {
             PrivateKey privateKey = KeyFactory.getInstance(algoName)
                     .generatePrivate(new PKCS8EncodedKeySpec(signKeyBytes));
-            Cipher cipher = Cipher.getInstance(algoName);
-            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            byte[] result = cipher.doFinal(dataHash.getBytes(StandardCharsets.UTF_8));
+            Signature signature = Signature.getInstance(algoName);
+            signature.initSign(privateKey);
+            signature.update(dataHash.getBytes(StandardCharsets.UTF_8));
+            byte[] result = signature.sign();
             StringBuilder sb = new StringBuilder();
             sb.append(Utils.getWineHere());
             sb.append("原始数据：");
@@ -167,14 +171,14 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             sb.append("\n签名数据：");
             sb.append(Utils.byteToBase64String(result));
             return sb.toString();
-        } catch (NoSuchPaddingException | InvalidKeySpecException | NoSuchAlgorithmException | InvalidKeyException |
-                 IllegalBlockSizeException | BadPaddingException e) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
      * 签名
+     *
      * @param context 算法上下文
      * @return String
      */
@@ -188,22 +192,22 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
         try {
             PublicKey publicKey = KeyFactory.getInstance(algoName)
                     .generatePublic(new X509EncodedKeySpec(signKeyBytes));
-            Cipher cipher = Cipher.getInstance(algoName);
-            cipher.init(Cipher.DECRYPT_MODE, publicKey);
-            byte[] result = cipher.doFinal(signToVerify);
-            if (SmUtil.sm3(new String(result)).equals(originalDataHash)) {
+            Signature signature = Signature.getInstance(algoName);
+            signature.initVerify(publicKey);
+            signature.update(originalDataHash.getBytes(StandardCharsets.UTF_8));
+            if (signature.verify(signToVerify)) {
                 return Utils.getWineHere() + "签名验证通过！";
             } else {
                 return Utils.getWineHere() + "签名验证失败！";
             }
-        } catch (NoSuchPaddingException | InvalidKeySpecException | NoSuchAlgorithmException | InvalidKeyException |
-                 IllegalBlockSizeException | BadPaddingException e) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
      * 签名验证
+     *
      * @param context 算法上下文
      * @return String
      */

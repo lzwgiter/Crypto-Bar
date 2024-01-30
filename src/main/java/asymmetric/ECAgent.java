@@ -61,11 +61,11 @@ public class ECAgent extends AsymmetricAgentAbstract {
 
     @Override
     public String sign(AlgoContext context) {
-        return null;
+        return this.sign("Ed25519", context.getInputKey(), context.getInputData());
     }
 
     @Override
     public String verify(AlgoContext context) {
-        return null;
+        return this.verify("Ed25519", context.getInputKey(), context.getSignature(), context.getInputData());
     }
 }

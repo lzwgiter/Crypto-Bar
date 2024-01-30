@@ -101,7 +101,7 @@ public class AlgoContext {
      * @param cmdLineInputData 终端输入参数
      */
     public void setInputKey(String cmdLineInputData) {
-        if (cmdLineInputData.contains("/")) {
+        if (cmdLineInputData.contains("/") || cmdLineInputData.contains("\\")) {
             // 文件路径
             File file = new File(cmdLineInputData);
             // 若文件存在则读取
@@ -124,7 +124,7 @@ public class AlgoContext {
     }
 
     public void setSignature(String cmdLineInputData) {
-        if (cmdLineInputData.contains("/")) {
+        if (cmdLineInputData.contains("/") || cmdLineInputData.contains("\\")) {
             // 文件路径
             File file = new File(cmdLineInputData);
             // 若文件存在则读取
