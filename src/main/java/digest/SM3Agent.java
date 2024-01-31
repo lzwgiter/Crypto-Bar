@@ -17,6 +17,6 @@ public class SM3Agent extends DigestAgentAbstract {
     @Override
     public String digest(String data, String filePath) {
         Utils.writeToFile(this.digest(data).substring(3), filePath);
-        return Utils.getWineHere() + "结果已经写入" + filePath;
+        return Utils.getWineHere() + "Result has been written to " + filePath;
     }
 }

@@ -30,7 +30,7 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             return this.generateKey(context);
         }
         if (context.getMode() == null) {
-            throw new RuntimeException("请指定工作模式！");
+            throw new RuntimeException("Work mode is needed!, using -h for usage.");
         }
         // 否则为加解密功能
         switch (context.getMode()) {
@@ -61,14 +61,14 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
                     filePath + ".pub");
             Utils.writeToFile(Utils.byteToBase64String(keyPair.getPrivate().getEncoded()),
                     filePath + ".pri");
-            return "公私钥已写入文件" + filePath;
+            return "key file:" + filePath + "(.pri/.pub)";
         } else {
             StringBuilder sb = new StringBuilder();
             sb.append(Utils.getWineHere());
-            sb.append("\033[38;5;10m公钥（X.509格式）：\033[0m\n-----BEGIN PUBLIC KEY-----\n");
+            sb.append("\033[38;5;10mpubkey(X.509):\033[0m\n-----BEGIN PUBLIC KEY-----\n");
             sb.append(Utils.normalizeFormat(keyPair.getPublic().getEncoded()));
             sb.append("\n-----END PUBLIC KEY-----\n");
-            sb.append("\033[38;5;10m私钥（PKCS#8）：\033[0m\n-----BEGIN PRIVATE KEY-----\n");
+            sb.append("\033[38;5;10mprikey(PKCS#8):\033[0m\n-----BEGIN PRIVATE KEY-----\n");
             sb.append(Utils.normalizeFormat(keyPair.getPrivate().getEncoded()));
             sb.append("\n-----END PRIVATE KEY-----");
             return sb.toString();
@@ -166,9 +166,9 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             byte[] result = signature.sign();
             StringBuilder sb = new StringBuilder();
             sb.append(Utils.getWineHere());
-            sb.append("原始数据：");
+            sb.append("Original data:");
             sb.append(dataToSign);
-            sb.append("\n签名数据：");
+            sb.append("\nSignature:");
             sb.append(Utils.byteToBase64String(result));
             return sb.toString();
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
@@ -196,9 +196,9 @@ public abstract class AsymmetricAgentAbstract extends AlgoAgentAbstract {
             signature.initVerify(publicKey);
             signature.update(originalDataHash.getBytes(StandardCharsets.UTF_8));
             if (signature.verify(signToVerify)) {
-                return Utils.getWineHere() + "签名验证通过！";
+                return Utils.getWineHere() + "Signature valid!";
             } else {
-                return Utils.getWineHere() + "签名验证失败！";
+                return Utils.getWineHere() + "Signature invalid!";
             }
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
             throw new RuntimeException(e);

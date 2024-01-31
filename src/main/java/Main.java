@@ -20,7 +20,7 @@ public class Main {
                            "  / ____/______  ______  / /_____        / __ )____ ______\n" +
                            " / /   / ___/ / / / __ \\/ __/ __ \\______/ __  / __ `/ ___/\n" +
                            "/ /___/ /  / /_/ / /_/ / /_/ /_/ /_____/ /_/ / /_/ / /    \n" +
-                           "\\____/_/   \\__, / .___/\\__/\\____/     /_____/\\__,_/_/    (by lzwgiter v1.0) \n" +
+                           "\\____/_/   \\__, / .___/\\__/\\____/     /_____/\\__,_/_/    (by lzwgiter v1.1) \n" +
                            "          /____/_/                                        \n" +
                            "\033[0m"
         );
@@ -35,18 +35,18 @@ public class Main {
         // 帮助选项
         options.addOption(Option.builder("h")
                 .longOpt("help")
-                .desc("显示帮助信息")
+                .desc("show this message")
                 .build());
         // 支持算法
         options.addOption(Option.builder("l")
                 .longOpt("list")
-                .desc("查看支持算法")
+                .desc("Supported algorithms")
                 .build());
         // 密钥生成算法
         options.addOption(Option.builder("g")
                 .longOpt("genKey")
                 .argName("keyType")
-                .desc("生成PEM格式公私钥对（RSA2048、ECC）")
+                .desc("Generate key pair")
                 .build());
         // 算法名称
         options.addOption(
@@ -54,7 +54,7 @@ public class Main {
                         .longOpt("algo")
                         .argName("algo")
                         .hasArg()
-                        .desc("算法名称，例如AES。-l查看所有支持算法。")
+                        .desc("Algorithm name, using -l for supported algorithms")
                         .build()
         );
         // 工作模式
@@ -63,7 +63,7 @@ public class Main {
                         .longOpt("mode")
                         .hasArg()
                         .argName("mode")
-                        .desc("工作模式，加密（e)、解密（d）、签名(s)、验签(v)")
+                        .desc("Work mode, encrypt(e) | decrypt(d) | signature(s) | verify(v)")
                         .build()
         );
         // 密钥
@@ -71,7 +71,7 @@ public class Main {
                 Option.builder("k")
                         .longOpt("key")
                         .hasArg()
-                        .desc("加密/签名、解密/验签密钥文件路径")
+                        .desc("Key file path")
                         .build()
         );
         // 签名内容
@@ -79,7 +79,7 @@ public class Main {
                 Option.builder("s")
                         .longOpt("sign")
                         .hasArg()
-                        .desc("待校验签名内容")
+                        .desc("Signature to be verified")
                         .build()
         );
         // 输入内容
@@ -88,7 +88,7 @@ public class Main {
                         .longOpt("input")
                         .hasArg()
                         .argName("input")
-                        .desc("输入内容")
+                        .desc("Input data")
                         .build()
         );
         // 输出到文件
@@ -97,14 +97,14 @@ public class Main {
                         .longOpt("output")
                         .hasArg()
                         .argName("output")
-                        .desc("输出文件路径")
+                        .desc("Output file path")
                         .build()
         );
         // bonus
         options.addOption(
                 Option.builder("x")
                         .longOpt("bonus")
-                        .desc("彩蛋")
+                        .desc("Bonus")
                         .build()
         );
         // 创建命令行解析器
@@ -115,20 +115,22 @@ public class Main {
             line = parser.parse(options, args);
             if (line.hasOption("x")) {
                 System.out.println(Utils.getBonus());
+                System.exit(0);
             }
             if (line.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.printHelp("java -jar crypto-bar.jar -n <algo_name> [options] <args>\n\033[38;5;10m" +
-                                    "- eg: 生成SM3摘要：xxx -n sm3 -i <待哈希数据>\n" +
-                                    "- eg: 生成RSA公私钥：xxx -n rsa -g -o ./output\n" +
-                                    "- eg: 验签：xxx -n rsa -m d -i <原始数据> -s <签名内容> -k <公钥>\n" +
-                                    "- eg: 对称加[解]密：xxx -n sm4 -m e[d] -i <待加/[解]密数据> -k <秘密值>\033[0m",
+                                    "- eg: generate SM3 hash: xxx -n sm3 -i <data>\n" +
+                                    "- eg: generate RSA key pair: xxx -n rsa -g -o ./output\n" +
+                                    "- eg: Verify a Signature: xxx -n rsa -m d -i <original data> -s <signature> -k <pubkey>\n" +
+                                    "- eg: En/Decrypt: xxx -n sm4 -m e[d] -i <data to be en/decrypt> -k <secret>\033[0m",
                         options);
+                System.exit(0);
             } else {
                 return line;
             }
         } catch (ParseException exp) {
-            System.out.println("参数解析错误，请使用 -h 查看帮助信息。");
+            System.out.println("parameter parse failed, using -h for usage.");
         }
         return null;
     }
@@ -139,13 +141,14 @@ public class Main {
         CommandLine cmdLine = parseArgs(args);
         if (cmdLine != null) {
             if (cmdLine.hasOption("l")) {
-                System.out.println("对称加密算法：SM4（128bits）、AES（192bits）");
-                System.out.println("非对称加密算法：SM2、RSA（2048bits）");
-                System.out.println("签名算法：ECC（Ed25519）");
-                System.out.println("哈希摘要算法：SM3、SHA256、MD5");
+                System.out.println("Symmetric: SM4(128bits), AES(192bits)");
+                System.out.println("Asymmetric: SM2, RSA(2048bits)");
+                System.out.println("Signature: ECC(Ed25519)");
+                System.out.println("Hash: SM3, SHA256, MD5");
+                System.exit(0);
             }
             if (!cmdLine.hasOption("n")) {
-                System.out.println("请指定要使用的算法！请使用-l查看支持的算法");
+                System.out.println("Algorithm name is needed, using -l for supported algorithms");
             } else {
                 // 获取算法上下文和代理对象
                 AlgoContext context = AlgoContext.buildAlgoContext(cmdLine);
@@ -153,7 +156,7 @@ public class Main {
                 if (agent != null) {
                     System.out.println(agent.process(context));
                 } else {
-                    System.out.println("不受支持的算法！请使用-l查看支持的算法");
+                    System.out.println("unsupported algorithm, using -l for supported algorithms");
                 }
             }
         }

@@ -66,7 +66,7 @@ public class AlgoContext {
                     Scanner scanner = new Scanner(file).useDelimiter("\\Z");
                     this.inputData = scanner.next();
                 } catch (FileNotFoundException e) {
-                    throw new RuntimeException("文件路径不存在！");
+                    throw new RuntimeException("File path not exists!");
                 }
             } else {
                 // 输入数据为包含"/"的字符串
@@ -91,7 +91,7 @@ public class AlgoContext {
         if (!outputFile.exists()) {
             this.outputWay = cmdLineInputData;
         } else {
-            throw new RuntimeException("当前路径已存在该文件！");
+            throw new RuntimeException("File already exists!");
         }
     }
 
@@ -112,10 +112,10 @@ public class AlgoContext {
                     Scanner scanner = new Scanner(file).useDelimiter("\\Z");
                     this.inputKey = scanner.next();
                 } catch (FileNotFoundException e) {
-                    throw new RuntimeException("文件路径不存在！");
+                    throw new RuntimeException("File path not exists!");
                 }
             } else {
-                throw new RuntimeException("输入为目录，请使用参数-i输入文件！-h查看用法");
+                throw new RuntimeException("Input is a directory, using -i to input file, using -h for usage");
             }
         } else {
             // 否则使用终端参数作为密钥
@@ -135,7 +135,7 @@ public class AlgoContext {
                     Scanner scanner = new Scanner(file).useDelimiter("\\Z");
                     this.signature = scanner.next();
                 } catch (FileNotFoundException e) {
-                    throw new RuntimeException("文件路径不存在！");
+                    throw new RuntimeException("File path not exists!");
                 }
             } else {
                 this.signature = cmdLineInputData;
@@ -178,7 +178,7 @@ public class AlgoContext {
                         context.setSignature(cmdLine.getOptionValue("s"));
                     }
                 } else {
-                    throw new RuntimeException("请使用-k给出加/解密使用的密钥！使用-h查看用法");
+                    throw new RuntimeException("key is needed, using -k to input key. using -h for usage");
                 }
             }
         }

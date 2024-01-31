@@ -29,14 +29,14 @@ public class SM2Agent extends AsymmetricAgentAbstract {
                     context.getOutputWay() + ".pub");
             Utils.writeToFile(Utils.byteToBase64String(keyPair.getPrivate().getEncoded()),
                     context.getOutputWay() + ".pri");
-            return Utils.getWineHere() + "已写入文件：" + context.getOutputWay();
+            return Utils.getWineHere() + "key file:" + context.getOutputWay() + "(.pri/.pub)";
         } else {
             StringBuilder sb = new StringBuilder();
             sb.append(Utils.getWineHere());
-            sb.append("\033[38;5;10m公钥（X.509格式）：\033[0m\n-----BEGIN PUBLIC KEY-----\n");
+            sb.append("\033[38;5;10mpubkey(X.509):\033[0m\n-----BEGIN PUBLIC KEY-----\n");
             sb.append(Utils.normalizeFormat(keyPair.getPublic().getEncoded()));
             sb.append("\n-----END PUBLIC KEY-----\n");
-            sb.append("\033[38;5;10m私钥（PKCS#8）：\033[0m\n-----BEGIN PRIVATE KEY-----\n");
+            sb.append("\033[38;5;10mprikey(PKCS#8):\033[0m\n-----BEGIN PRIVATE KEY-----\n");
             sb.append(Utils.normalizeFormat(keyPair.getPrivate().getEncoded()));
             sb.append("\n-----END PRIVATE KEY-----");
             return sb.toString();

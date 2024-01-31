@@ -39,7 +39,7 @@ public abstract class SymmetricAgentAbstract extends AlgoAgentAbstract {
         } else if ("d".equals(context.getMode())) {
             return decrypt(context);
         } else {
-            return "错误的模式！请使用-h查看用法！";
+            return "Wrong working mode! using -h for usage.";
         }
     }
 
